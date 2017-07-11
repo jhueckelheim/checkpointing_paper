@@ -127,9 +127,15 @@ provides an optimal schedule at which to store checkpoints,
 i.e. states from which the forward simulation can be restored. This
 algorithm is further discussed in section \ref{sec:revolve}.
 
+The tool and the algorithm, however, only provide the schedule to be
+used for checkpointing. Although this eases some of the complexity of
+the application code using the algorithm, the glue code required to
+manage the forward and adjoint runs is still quite complex. This acts
+as a deterrent to more widespread use of the algorithm in the
+community. 
+
 In this paper we describe how the algorithm can be combined with code
-generation to make checkpointing, still considered an advanced
-technique by practitioners, much more accessible. The software that
+generation to make checkpointing much more accessible. The software that
 can enable this is described in section \ref{sec:api}. 
 
 The performance impact of using the checkpointing scheme, as well as
@@ -162,7 +168,8 @@ A nice test case that can be scaled up in size easily. Timings for different mes
 This work was highly successful, but more work could be done.
 
 \begin{acks}
-  The authors are very grateful.
+  The authors are very grateful to Mathias Louboutin (?), Simon Funke
+  (?). 
 \end{acks}
 
 
