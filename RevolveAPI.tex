@@ -60,7 +60,7 @@
 
 \renewcommand\shortauthors{Kukreja, N. et al}
 
-\begin{abstract}
+\begin{abstract} TODO
 The computation of adjoints in optimisation and inverse design problems requires storing intermediate data. The available memory size sets a limit to this, and necessitates recomputation in some instances. Revolve checkpointing offers an optimal schedule that trades computational cost for smaller memory footprints. Integrating Revolve into a modern python HPC code and combining it with code generation is not straightforward. We present an API that makes checkpointing accessible from a DSL-based code generation environment and present a benchmark study. TODO.
 \end{abstract}
 
@@ -91,18 +91,59 @@ The computation of adjoints in optimisation and inverse design problems requires
 \maketitle
 
 \section{Introduction}
+Seismic inversion, and more specifically Full Waveform Inversion (FWI)
+is a computationally heavy technique that uses data from seismic wave
+propagation experiments to calculate physical parameters of the
+earth's subsurface. In case of FWI, this additional information on the
+physical parameters drives the generation of better subsurface
+images (CITE). An FWI problem is setup as an optimization problem using
+a gradient-based optimization algorithm with the objective function
+being minimised is the misfit between the simulated data and the
+observed data received at the receivers. A finite-difference
+discretization of one of the forms of the wave equation acts as the
+constraint for the optimization. Since the gradient is calculated using the
+adjoint-state method, by the correlation between the fields in forward
+and adjoint (reverse) mode (CITE), the method requires that the forward and
+adjoint field be known for each time step in the
+simulation. Considering that the typical domain for such a setup is 3
+dimensional with 1000 points in each dimension, the field requires
+$1000 \times 1000 \times 1000 \times 4 = 4 \times 10^{9} $ bytes ( 4
+GB) of memory for a single timestep. Since the simulation is run for a
+typical $3000$ time-steps, storing the entire forward field in memory
+would require $12 TB$ of memory which is prohibitively high. We
+discuss this in section \ref{sec:inversion_devito}. 
+
+Previous work on similar inverse problems led to the \emph{Revolve}
+algorithm \cite{griewank2000} and the associated C++ tool which
+provides an optimal schedule at which to store checkpoints,
+i.e. states from which the forward simulation can be restored. This
+algorithm is further discussed in section \ref{sec:revolve}.
+
+In this paper we describe how the algorithm can be combined with code
+generation to make checkpointing, still considered an advanced
+technique by practitioners, much more accessible. The software that
+can enable this is described in section \ref{sec:api}. 
+
+The performance impact of using the checkpointing scheme, as well as
+the effect of the size of memory available is studied in section
+\ref{sec:experiment}. 
+
 Motivation: Why do we need to connect revolve and a python seismic inversion code? What is there to learn for others? How does our work help readers and the world?
 
-\section{Seismic inversion}
-Some context on seismic imaging, the PDEs, the method. Why use adjoints. Why is this problem time-dependent. Why do we need a lot of data.
-
-\section{Devito}
-Code generation, references to previous papers about Devito. Why not be brave and write this in Fortran.
+\section{Seismic inversion and Devito}
+\label{sec:inversion_devito}
+Some context on seismic imaging, the PDEs, the method. Why use
+adjoints. Why is this problem time-dependent. Why do we need a lot of
+data.
+Code generation, references to previous papers about Devito. Why not
+be brave and write this in Fortran.
 
 \section{Revolve}
-How does revolve work, how is it implemented in C++. What other variants (online, multi-stage) are in the implementation.
+\label{sec:revolve}
+How does revolve work and save memory, how is it implemented in C++. What other variants (online, multi-stage) are in the implementation.
 
 \section{API: Connecting Revolve with Devito}
+\label{sec:api}
 This is the core of the paper.
 
 What distinguishes us from previous work? What are our aims?
@@ -189,6 +230,7 @@ point to a checkpoint that is available in memory.
 
 
 \section{Test case, Results}
+\label{sec:experiment}
 A nice test case that can be scaled up in size easily. Timings for different mesh sizes, with different amounts of memory set as the upper limit.
 
 \section{Conclusions}
@@ -200,6 +242,6 @@ This work was highly successful, but more work could be done.
 
 
 \bibliographystyle{ACM-Reference-Format}
-\bibliography{sample-bibliography} 
+\bibliography{bib_checkpointing} 
 
 \end{document}
