@@ -61,7 +61,12 @@
 \renewcommand\shortauthors{Kukreja, N. et al}
 
 \begin{abstract} TODO
-The computation of adjoints in optimisation and inverse design problems requires storing intermediate data. The available memory size sets a limit to this, and necessitates recomputation in some instances. Revolve checkpointing offers an optimal schedule that trades computational cost for smaller memory footprints. Integrating Revolve into a modern python HPC code and combining it with code generation is not straightforward. We present an API that makes checkpointing accessible from a DSL-based code generation environment and present a benchmark study. TODO.
+The computation of adjoints in optimisation and inverse design problems requires storing
+intermediate data. The available memory size sets a limit to this, and necessitates recomputation in
+some instances. Revolve checkpointing offers an optimal schedule that trades computational cost for
+smaller memory footprints. Integrating Revolve into a modern python HPC code and combining it with
+code generation is not straightforward. We present an API that makes checkpointing accessible from a
+DSL-based code generation environment and present a benchmark study. TODO.
 \end{abstract}
 
 %
@@ -128,7 +133,8 @@ The performance impact of using the checkpointing scheme, as well as
 the effect of the size of memory available is studied in section
 \ref{sec:experiment}. 
 
-Motivation: Why do we need to connect revolve and a python seismic inversion code? What is there to learn for others? How does our work help readers and the world?
+Motivation: Why do we need to connect revolve and a python seismic inversion code? What is there to
+learn for others? How does our work help readers and the world?
 
 \section{Seismic inversion and Devito}
 \label{sec:inversion_devito}
@@ -140,7 +146,8 @@ be brave and write this in Fortran.
 
 \section{Revolve}
 \label{sec:revolve}
-How does revolve work and save memory, how is it implemented in C++. What other variants (online, multi-stage) are in the implementation.
+How does revolve work and save memory, how is it implemented in C++. What other variants (online,
+multi-stage) are in the implementation.
 
 \section{API: Connecting Revolve with Devito}
 \label{sec:api}
@@ -185,21 +192,38 @@ computation.
 
 To introduce checkpointing, Devito requires some additional features.
 
-Following from the last discussion, this is to document the changes that will be made in Devito to enable the use of checkpointing:
+Following from the last discussion, this is to document the changes that will be made in Devito to
+enable the use of checkpointing:
 
-Start and stop Operators at a given time-step: Add optional parameters to Operator.apply() called tstart and tend to (re)start the Operator from a given time-step and run for a given number of time steps.
+Start and stop Operators at a given time-step: Add optional parameters to Operator.apply() called
+tstart and tend to (re)start the Operator from a given time-step and run for a given number of time
+steps.
 
-Store last accessed time step in data objects: This is largely related to issue #69 where, when a TimeData object has a buffered time dimension, it is not clear which buffer holds the field computed at the last time-step. Currently we are working around this by externally tracking the number of time-steps that were run on the object. This should be internalised so that external code can reliably know how to access the last computed field. There was a proposal to do the same for PointData objects as well but I don't remember the argument for that - could potentially be discussed (again).
+Store last accessed time step in data objects: This is largely related to issue #69 where, when a
+TimeData object has a buffered time dimension, it is not clear which buffer holds the field computed
+at the last time-step. Currently we are working around this by externally tracking the number of
+time-steps that were run on the object. This should be internalised so that external code can
+reliably know how to access the last computed field. There was a proposal to do the same for
+PointData objects as well but I don't remember the argument for that - could potentially be
+discussed (again).
 
-Deep copy routines inside symbolic data objects: All symbolic data objects to have a save routine to save their state (data as well as the internal time counter added by the above, to start with) in a memory location provided by the caller. There would also be an accompanying restore method to restore state from a provided memory location. A corollary to this would be that a symbol should be aware of and be capable of reporting the amount of memory required to save its state. This knowledge would eventually find its way into the checkpointer which would be responsible for allocating memory to store the checkpoints.
+Deep copy routines inside symbolic data objects: All symbolic data objects to have a save routine to
+save their state (data as well as the internal time counter added by the above, to start with) in a
+memory location provided by the caller. There would also be an accompanying restore method to
+restore state from a provided memory location. A corollary to this would be that a symbol should be
+aware of and be capable of reporting the amount of memory required to save its state. This knowledge
+would eventually find its way into the checkpointer which would be responsible for allocating memory
+to store the checkpoints.
 
 \subsection{API, Pyrevolve side}
 
-pyrevolve will provide an abstract base class "Checkpoint" that must be extended by a user of pyrevolve, and must provide
+pyrevolve will provide an abstract base class "Checkpoint" that must be extended by a user of
+pyrevolve, and must provide
 
 \begin{itemize}
 \item a `size` property, containing the size of a checkpoint in Bytes,
-\item a `save(ptr)` method that deep-copies all live data that needs to be checkpointed into the provided location inside the Checkpoint storage, and
+\item a `save(ptr)` method that deep-copies all live data that needs to be checkpointed into the
+provided location inside the Checkpoint storage, and
 \item a `load(ptr)`method that deep-copies all data from the given location back into the live data.
 \end{itemize}
 
@@ -211,7 +235,8 @@ related issue https://github.com/opesci/devito/issues/247.
 The actual computation will operate like this:
 
 \begin{enumerate}
-\item The user initialises the operators with whatever symbols are required, and implements a concrete
+\item The user initialises the operators with whatever symbols are required, and implements a
+concrete
 implementation of the Checkpoint object with the above properties.
 \item The user calls pyrevolve, with the arguments: `fwd\_operator`, `rev\_operator`, `checkpoint`,
 `n\_time\_steps`, `n\_checkpoints`. (Other options will follow in the future and require a more
@@ -231,7 +256,8 @@ point to a checkpoint that is available in memory.
 
 \section{Test case, Results}
 \label{sec:experiment}
-A nice test case that can be scaled up in size easily. Timings for different mesh sizes, with different amounts of memory set as the upper limit.
+A nice test case that can be scaled up in size easily. Timings for different mesh sizes, with
+different amounts of memory set as the upper limit.
 
 \section{Conclusions}
 This work was highly successful, but more work could be done.
