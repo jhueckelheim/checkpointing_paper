@@ -38,6 +38,7 @@
 
 
 \author{Navjot Kukreja}
+\authornote{Note: Author list is not finalized yet. Subject to change}
 \affiliation{%
   \institution{Imperial College London}
   \city{London}
@@ -96,6 +97,7 @@ DSL-based code generation environment and present a benchmark study. TODO.
 \maketitle
 
 \section{Introduction}
+(1 page)
 Seismic inversion, and more specifically Full Waveform Inversion (FWI)
 is a computationally heavy technique that uses data from seismic wave
 propagation experiments to calculate physical parameters of the
@@ -143,6 +145,7 @@ Motivation: Why do we need to connect revolve and a python seismic inversion cod
 learn for others? How does our work help readers and the world?
 
 \section{Seismic inversion and Devito}
+(1 page)
 \label{sec:inversion_devito}
 Some context on seismic imaging, the PDEs, the method. Why use
 adjoints. Why is this problem time-dependent. Why do we need a lot of
@@ -151,11 +154,13 @@ Code generation, references to previous papers about Devito. Why not
 be brave and write this in Fortran.
 
 \section{Revolve}
+(2 pages)
 \label{sec:revolve}
 How does revolve work and save memory, how is it implemented in C++. What other variants (online,
 multi-stage) are in the implementation.
 
 \section{API: Connecting Revolve with Devito}
+(3 pages)
 \label{sec:api}
 This is the core of the paper.
 
@@ -179,7 +184,7 @@ interface to Revolve. This library was integrated into the Devito code generatio
 
 The pyrevolve library contains two parts: crevolve, which is a thin Python wrapper around a
 previously published C++
-implementation\footnote{http://www2.math.uni-paderborn.de/index.php?id=12067&L=1}, and pyrevolve
+implementation\footnote{http://www2.math.uni-paderborn.de/index.php?id=12067\&L=1}, and pyrevolve
 itself, which sits on top of crevolve and manages data and computation management for the user.
 
 The C++ files in this package are slightly modified to play more nicely with Python, but the
@@ -205,7 +210,7 @@ Start and stop Operators at a given time-step: Add optional parameters to Operat
 tstart and tend to (re)start the Operator from a given time-step and run for a given number of time
 steps.
 
-Store last accessed time step in data objects: This is largely related to issue #69 where, when a
+Store last accessed time step in data objects: This is largely related to issue \#69 where, when a
 TimeData object has a buffered time dimension, it is not clear which buffer holds the field computed
 at the last time-step. Currently we are working around this by externally tracking the number of
 time-steps that were run on the object. This should be internalised so that external code can
@@ -261,11 +266,18 @@ point to a checkpoint that is available in memory.
 
 
 \section{Test case, Results}
+(2 pages)
 \label{sec:experiment}
 A nice test case that can be scaled up in size easily. Timings for different mesh sizes, with
 different amounts of memory set as the upper limit.
 
+We will use Marmousi 2D data, resampling it for different grid
+resolutions. 
+
+\includegraphics[width=0.8\linewidth]{images/marmousi_velocity.png} 
+
 \section{Conclusions}
+(1 page)
 This work was highly successful, but more work could be done.
 
 \begin{acks}
